@@ -1,122 +1,131 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
-import starlight from '@astrojs/starlight';
-import starlightBlog from 'starlight-blog';
-import sitemap from '@astrojs/sitemap';
-import { remarkMermaid } from './src/plugins/remark-mermaid.mjs';
+import { defineConfig } from "astro/config";
+import starlight from "@astrojs/starlight";
+import starlightBlog from "starlight-blog";
+import sitemap from "@astrojs/sitemap";
+import { remarkMermaid } from "./src/plugins/remark-mermaid.mjs";
+import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://kod.dev',
-	markdown: {
-		remarkPlugins: [remarkMermaid],
-	},
-	integrations: [
-		sitemap(),
-		starlight({
-			head: [
-				/* ── Preconnect hints ── */
-				{ tag: 'link', attrs: { rel: 'preconnect', href: 'https://cdn.jsdelivr.net', crossorigin: true } },
-				{ tag: 'link', attrs: { rel: 'dns-prefetch', href: 'https://cdn.jsdelivr.net' } },
-				/* ── RSS discovery ── */
-				{ tag: 'link', attrs: { rel: 'alternate', type: 'application/rss+xml', title: 'CodeBuddy Blog', href: '/blog/rss.xml' } },
-				/* ── Analytics (Plausible — privacy-friendly, no cookies) ── */
-				{ tag: 'script', attrs: { defer: true, 'data-domain': 'kod.dev', src: 'https://plausible.io/js/script.js' } },
-				/* ── Open Graph ── */
-				{ tag: 'meta', attrs: { property: 'og:site_name', content: 'CodeBuddy' } },
-				{ tag: 'meta', attrs: { property: 'og:type', content: 'website' } },
-				{ tag: 'meta', attrs: { property: 'og:image', content: 'https://kod.dev/og-image.png' } },
-				{ tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
-				{ tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
-				{ tag: 'meta', attrs: { property: 'og:image:alt', content: 'CodeBuddy — The autonomous AI software engineer for your IDE' } },
-				/* ── Author ── */
-				{ tag: 'meta', attrs: { name: 'author', content: 'Oyinlola Olasunkanmi Raymond' } },
-				{ tag: 'link', attrs: { rel: 'author', href: 'https://github.com/olasunkanmi-SE' } },
-				/* ── Twitter Card ── */
-				{ tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
-				{ tag: 'meta', attrs: { name: 'twitter:image', content: 'https://kod.dev/og-image.png' } },
-				{ tag: 'meta', attrs: { name: 'twitter:creator', content: '@kosemani1' } },
-				{ tag: 'meta', attrs: { name: 'twitter:site', content: '@kosemani1' } },
-				/* ── JSON-LD Structured Data ── */
-				{
-					tag: 'script',
-					attrs: { type: 'application/ld+json' },
-					content: JSON.stringify({
-						'@context': 'https://schema.org',
-						'@type': 'SoftwareApplication',
-						name: 'CodeBuddy',
-						applicationCategory: 'DeveloperApplication',
-						operatingSystem: 'Windows, macOS, Linux',
-						description: 'The autonomous AI software engineer for VS Code, Cursor, Windsurf, and VSCodium. Multi-agent architecture, 27+ tools, local model support, and enterprise-grade security.',
-						url: 'https://kod.dev',
-						offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-						softwareHelp: { '@type': 'WebPage', url: 'https://kod.dev/getting-started/overview/' },
-						author: {
-							'@type': 'Person',
-							name: 'Oyinlola Olasunkanmi Raymond',
-							url: 'https://olasunkanmi.app',
-							sameAs: [
-								'https://github.com/olasunkanmi-SE',
-								'https://www.linkedin.com/in/oyinlola-olasunkanmi-raymond-71b6b8aa/',
-								'https://twitter.com/kosemani1',
-							],
-							jobTitle: 'Software Engineer',
-							worksFor: { '@type': 'Organization', name: 'Carsome' },
-						},
-						creator: {
-							'@type': 'Person',
-							name: 'Oyinlola Olasunkanmi Raymond',
-							url: 'https://olasunkanmi.app',
-						},
-					}),
-				},
-				/* ── JSON-LD Person (creator) for Google Knowledge Panel ── */
-				{
-					tag: 'script',
-					attrs: { type: 'application/ld+json' },
-					content: JSON.stringify({
-						'@context': 'https://schema.org',
-						'@type': 'Person',
-						name: 'Oyinlola Olasunkanmi Raymond',
-						url: 'https://olasunkanmi.app',
-						jobTitle: 'Software Engineer',
-						worksFor: { '@type': 'Organization', name: 'Carsome' },
-						sameAs: [
-							'https://github.com/olasunkanmi-SE',
-							'https://www.linkedin.com/in/oyinlola-olasunkanmi-raymond-71b6b8aa/',
-							'https://twitter.com/kosemani1',
-						],
-						knowsAbout: ['TypeScript', 'Node.js', 'AI', 'LangChain', 'LangGraph', 'Software Architecture'],
-						makesOffer: {
-							'@type': 'SoftwareApplication',
-							name: 'CodeBuddy',
-							url: 'https://kod.dev',
-						},
-					}),
-				},
-				/* ── Site-wide JSON-LD WebSite for Google Sitelinks Search Box ── */
-				{
-					tag: 'script',
-					attrs: { type: 'application/ld+json' },
-					content: JSON.stringify({
-						'@context': 'https://schema.org',
-						'@type': 'WebSite',
-						name: 'CodeBuddy Documentation',
-						url: 'https://kod.dev',
-						author: {
-							'@type': 'Person',
-							name: 'Oyinlola Olasunkanmi Raymond',
-							url: 'https://olasunkanmi.app',
-						},
-					}),
-				},
-				/* ── Mermaid JS ── */
-				{
-					tag: 'script',
-					attrs: {
-						type: 'module',
-					},
-					content: `
+  site: "https://codebuddy-docs.vercel.app/",
+  adapter: vercel(),
+  markdown: {
+    remarkPlugins: [remarkMermaid],
+  },
+  integrations: [
+    sitemap(),
+    starlight({
+      head: [
+        /* ── Preconnect hints ── */
+        { tag: "link", attrs: { rel: "preconnect", href: "https://cdn.jsdelivr.net", crossorigin: true } },
+        { tag: "link", attrs: { rel: "dns-prefetch", href: "https://cdn.jsdelivr.net" } },
+        /* ── RSS discovery ── */
+        {
+          tag: "link",
+          attrs: { rel: "alternate", type: "application/rss+xml", title: "CodeBuddy Blog", href: "/blog/rss.xml" },
+        },
+        /* ── Analytics (Plausible — privacy-friendly, no cookies) ── */
+        { tag: "script", attrs: { defer: true, "data-domain": "kod.dev", src: "https://plausible.io/js/script.js" } },
+        /* ── Open Graph ── */
+        { tag: "meta", attrs: { property: "og:site_name", content: "CodeBuddy" } },
+        { tag: "meta", attrs: { property: "og:type", content: "website" } },
+        { tag: "meta", attrs: { property: "og:image", content: "https://codebuddy-docs.vercel.app//og-image.png" } },
+        { tag: "meta", attrs: { property: "og:image:width", content: "1200" } },
+        { tag: "meta", attrs: { property: "og:image:height", content: "630" } },
+        {
+          tag: "meta",
+          attrs: { property: "og:image:alt", content: "CodeBuddy — The autonomous AI software engineer for your IDE" },
+        },
+        /* ── Author ── */
+        { tag: "meta", attrs: { name: "author", content: "Oyinlola Olasunkanmi Raymond" } },
+        { tag: "link", attrs: { rel: "author", href: "https://github.com/olasunkanmi-SE" } },
+        /* ── Twitter Card ── */
+        { tag: "meta", attrs: { name: "twitter:card", content: "summary_large_image" } },
+        { tag: "meta", attrs: { name: "twitter:image", content: "https://codebuddy-docs.vercel.app//og-image.png" } },
+        { tag: "meta", attrs: { name: "twitter:creator", content: "@kosemani1" } },
+        { tag: "meta", attrs: { name: "twitter:site", content: "@kosemani1" } },
+        /* ── JSON-LD Structured Data ── */
+        {
+          tag: "script",
+          attrs: { type: "application/ld+json" },
+          content: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "CodeBuddy",
+            applicationCategory: "DeveloperApplication",
+            operatingSystem: "Windows, macOS, Linux",
+            description:
+              "The autonomous AI software engineer for VS Code, Cursor, Windsurf, and VSCodium. Multi-agent architecture, 27+ tools, local model support, and enterprise-grade security.",
+            url: "https://codebuddy-docs.vercel.app/",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            softwareHelp: { "@type": "WebPage", url: "https://codebuddy-docs.vercel.app//getting-started/overview/" },
+            author: {
+              "@type": "Person",
+              name: "Oyinlola Olasunkanmi Raymond",
+              url: "https://olasunkanmi.app",
+              sameAs: [
+                "https://github.com/olasunkanmi-SE",
+                "https://www.linkedin.com/in/oyinlola-olasunkanmi-raymond-71b6b8aa/",
+                "https://twitter.com/kosemani1",
+              ],
+              jobTitle: "Software Engineer",
+              worksFor: { "@type": "Organization", name: "Carsome" },
+            },
+            creator: {
+              "@type": "Person",
+              name: "Oyinlola Olasunkanmi Raymond",
+              url: "https://olasunkanmi.app",
+            },
+          }),
+        },
+        /* ── JSON-LD Person (creator) for Google Knowledge Panel ── */
+        {
+          tag: "script",
+          attrs: { type: "application/ld+json" },
+          content: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: "Oyinlola Olasunkanmi Raymond",
+            url: "https://olasunkanmi.app",
+            jobTitle: "Software Engineer",
+            worksFor: { "@type": "Organization", name: "Carsome" },
+            sameAs: [
+              "https://github.com/olasunkanmi-SE",
+              "https://www.linkedin.com/in/oyinlola-olasunkanmi-raymond-71b6b8aa/",
+              "https://twitter.com/kosemani1",
+            ],
+            knowsAbout: ["TypeScript", "Node.js", "AI", "LangChain", "LangGraph", "Software Architecture"],
+            makesOffer: {
+              "@type": "SoftwareApplication",
+              name: "CodeBuddy",
+              url: "https://codebuddy-docs.vercel.app/",
+            },
+          }),
+        },
+        /* ── Site-wide JSON-LD WebSite for Google Sitelinks Search Box ── */
+        {
+          tag: "script",
+          attrs: { type: "application/ld+json" },
+          content: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "CodeBuddy Documentation",
+            url: "https://codebuddy-docs.vercel.app/",
+            author: {
+              "@type": "Person",
+              name: "Oyinlola Olasunkanmi Raymond",
+              url: "https://olasunkanmi.app",
+            },
+          }),
+        },
+        /* ── Mermaid JS ── */
+        {
+          tag: "script",
+          attrs: {
+            type: "module",
+          },
+          content: `
 						import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 
 						function getTheme() {
@@ -354,130 +363,130 @@ export default defineConfig({
 						});
 						themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 					`,
-				},
-			],
-			title: 'CodeBuddy',
-			disable404Route: true,
-			editLink: {
-				baseUrl: 'https://github.com/olasunkanmi-SE/codebuddy-docs/edit/main/',
-			},
-			logo: {
-				light: './src/assets/codebuddylogo-light.svg',
-				dark: './src/assets/codebuddylogo.svg',
-			},
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/olasunkanmi-SE/codebuddy' }],
-			plugins: [
-				starlightBlog({
-					title: 'Blog',
-					authors: {
-						ola: {
-							name: 'Olasunkanmi Raymond',
-							title: 'Creator of CodeBuddy',
-							picture: 'https://github.com/olasunkanmi-SE.png',
-							url: 'https://github.com/olasunkanmi-SE',
-						},
-					},
-					metrics: {
-						readingTime: true,
-						words: 'rounded',
-					},
-					postCount: 10,
-					recentPostCount: 5,
-				}),
-			],
-			customCss: ['./src/styles/custom.css'],
-			components: {
-				Header: './src/components/Header.astro',
-				Head: './src/components/Head.astro',
-			},
-			sidebar: [
-				{
-					label: 'Get Started',
-					items: [
-						{ label: 'Overview', slug: 'getting-started/overview' },
-						{ label: 'Installation', slug: 'getting-started/installation' },
-						{ label: 'Quickstart', slug: 'getting-started/quickstart' },
-						{ label: 'Configuration', slug: 'getting-started/configuration' },
-						{ label: 'Onboarding Wizard', slug: 'getting-started/onboarding' },
-					],
-				},
-				{
-					label: 'Use CodeBuddy',
-					items: [
-						{ label: 'Inline Completion', slug: 'features/inline-completion' },
-						{ label: 'Code Indexing', slug: 'features/code-indexing' },
-						{ label: 'Semantic Search', slug: 'features/semantic-search' },
-						{ label: 'Composer', slug: 'features/composer' },
-						{ label: 'Diff Review', slug: 'features/diff-review' },
-						{ label: 'Browser Automation', slug: 'features/browser-automation' },
-						{ label: 'Codebase Analysis', slug: 'features/codebase-analysis' },
-						{ label: 'Automations', slug: 'features/automations' },
-						{ label: 'Smart Reader', slug: 'features/smart-reader' },
-						{ label: 'Testing', slug: 'features/testing' },
-						{ label: 'Docker', slug: 'features/docker' },
-						{ label: 'Internationalization', slug: 'features/i18n' },
-						{ label: 'Skills', slug: 'features/skills' },
-						{ label: 'Project Rules', slug: 'features/project-rules' },
-						{ label: 'Cost Tracking', slug: 'features/cost-tracking' },
-						{ label: 'Checkpoints', slug: 'features/checkpoints' },
-						{ label: 'Debugger', slug: 'features/debugger' },
-						{ label: 'Deep Terminal', slug: 'features/deep-terminal' },
-						{ label: 'Web Search', slug: 'features/web-search' },
-						{ label: 'News Reader', slug: 'features/news-reader' },
-						{ label: 'Concurrency Queue', slug: 'features/concurrency-queue' },
-						{ label: 'Connectors', slug: 'features/connectors' },
-						{ label: 'Context Compaction', slug: 'features/context-compaction' },
-						{ label: 'Doc Generator', slug: 'features/documentation-generator' },
-						{ label: 'Doctor', slug: 'features/doctor' },
-						{ label: 'Notification Center', slug: 'features/notification-center' },
-						{ label: 'Dependency Graph', slug: 'features/dependency-graph' },
-						{ label: 'Get started with Skills', slug: 'reference/skills-api' },
-					],
-				},
-				{
-					label: 'Core Concepts',
-					items: [
-						{ label: 'Ask & Agent Modes', slug: 'concepts/modes' },
-						{ label: 'Context System', slug: 'concepts/context' },
-						{ label: 'LLM Providers', slug: 'concepts/providers' },
-						{ label: 'Multi-Agent Architecture', slug: 'concepts/architecture' },
-						{ label: 'Subagent System', slug: 'concepts/subagents' },
-						{ label: 'Tools', slug: 'concepts/tools' },
-						{ label: 'Think Tool', slug: 'concepts/think-tool' },
-						{ label: 'MCP Integration', slug: 'concepts/mcp' },
-						{ label: 'Memory System', slug: 'concepts/memory' },
-						{ label: 'Prompt Pipeline', slug: 'concepts/prompt-pipeline' },
-						{ label: 'Multi-Level Cache', slug: 'concepts/caching' },
-						{ label: 'Chat History', slug: 'concepts/chat-history' },
-						{ label: 'Local Models', slug: 'concepts/local-models' },
-						{ label: 'Worker Threads', slug: 'concepts/workers' },
-						{ label: 'WebAssembly (WASM)', slug: 'concepts/wasm' },
-						{ label: 'Self-Healing Execution', slug: 'concepts/self-healing' },
-					],
-				},
-				{
-					label: 'Skills Catalog',
-					collapsed: true,
-					autogenerate: { directory: 'skills' },
-				},
-				{
-					label: 'Administration',
-					items: [
-						{ label: 'Security', slug: 'admin/security' },
-						{ label: 'Access Control', slug: 'admin/access-control' },
-						{ label: 'Permission Scoping', slug: 'admin/permission-scoping' },
-						{ label: 'Credential Proxy', slug: 'admin/credential-proxy' },
-						{ label: 'Telemetry & Observability', slug: 'admin/telemetry' },
-						{ label: 'Production Safeguards', slug: 'admin/production-safeguards' },
-						{ label: 'Performance Profiler', slug: 'admin/performance-profiler' },
-						{ label: 'Troubleshooting', slug: 'admin/troubleshooting' },
-					],
-				},
-				{
-					label: 'Reference',
-					autogenerate: { directory: 'reference' },
-				},
-			],
-		}),
-	],
+        },
+      ],
+      title: "CodeBuddy",
+      disable404Route: true,
+      editLink: {
+        baseUrl: "https://github.com/olasunkanmi-SE/codebuddy-docs/edit/main/",
+      },
+      logo: {
+        light: "./src/assets/codebuddylogo-light.svg",
+        dark: "./src/assets/codebuddylogo.svg",
+      },
+      social: [{ icon: "github", label: "GitHub", href: "https://github.com/olasunkanmi-SE/codebuddy" }],
+      plugins: [
+        starlightBlog({
+          title: "Blog",
+          authors: {
+            ola: {
+              name: "Olasunkanmi Raymond",
+              title: "Creator of CodeBuddy",
+              picture: "https://github.com/olasunkanmi-SE.png",
+              url: "https://github.com/olasunkanmi-SE",
+            },
+          },
+          metrics: {
+            readingTime: true,
+            words: "rounded",
+          },
+          postCount: 10,
+          recentPostCount: 5,
+        }),
+      ],
+      customCss: ["./src/styles/custom.css"],
+      components: {
+        Header: "./src/components/Header.astro",
+        Head: "./src/components/Head.astro",
+      },
+      sidebar: [
+        {
+          label: "Get Started",
+          items: [
+            { label: "Overview", slug: "getting-started/overview" },
+            { label: "Installation", slug: "getting-started/installation" },
+            { label: "Quickstart", slug: "getting-started/quickstart" },
+            { label: "Configuration", slug: "getting-started/configuration" },
+            { label: "Onboarding Wizard", slug: "getting-started/onboarding" },
+          ],
+        },
+        {
+          label: "Use CodeBuddy",
+          items: [
+            { label: "Inline Completion", slug: "features/inline-completion" },
+            { label: "Code Indexing", slug: "features/code-indexing" },
+            { label: "Semantic Search", slug: "features/semantic-search" },
+            { label: "Composer", slug: "features/composer" },
+            { label: "Diff Review", slug: "features/diff-review" },
+            { label: "Browser Automation", slug: "features/browser-automation" },
+            { label: "Codebase Analysis", slug: "features/codebase-analysis" },
+            { label: "Automations", slug: "features/automations" },
+            { label: "Smart Reader", slug: "features/smart-reader" },
+            { label: "Testing", slug: "features/testing" },
+            { label: "Docker", slug: "features/docker" },
+            { label: "Internationalization", slug: "features/i18n" },
+            { label: "Skills", slug: "features/skills" },
+            { label: "Project Rules", slug: "features/project-rules" },
+            { label: "Cost Tracking", slug: "features/cost-tracking" },
+            { label: "Checkpoints", slug: "features/checkpoints" },
+            { label: "Debugger", slug: "features/debugger" },
+            { label: "Deep Terminal", slug: "features/deep-terminal" },
+            { label: "Web Search", slug: "features/web-search" },
+            { label: "News Reader", slug: "features/news-reader" },
+            { label: "Concurrency Queue", slug: "features/concurrency-queue" },
+            { label: "Connectors", slug: "features/connectors" },
+            { label: "Context Compaction", slug: "features/context-compaction" },
+            { label: "Doc Generator", slug: "features/documentation-generator" },
+            { label: "Doctor", slug: "features/doctor" },
+            { label: "Notification Center", slug: "features/notification-center" },
+            { label: "Dependency Graph", slug: "features/dependency-graph" },
+            { label: "Get started with Skills", slug: "reference/skills-api" },
+          ],
+        },
+        {
+          label: "Core Concepts",
+          items: [
+            { label: "Ask & Agent Modes", slug: "concepts/modes" },
+            { label: "Context System", slug: "concepts/context" },
+            { label: "LLM Providers", slug: "concepts/providers" },
+            { label: "Multi-Agent Architecture", slug: "concepts/architecture" },
+            { label: "Subagent System", slug: "concepts/subagents" },
+            { label: "Tools", slug: "concepts/tools" },
+            { label: "Think Tool", slug: "concepts/think-tool" },
+            { label: "MCP Integration", slug: "concepts/mcp" },
+            { label: "Memory System", slug: "concepts/memory" },
+            { label: "Prompt Pipeline", slug: "concepts/prompt-pipeline" },
+            { label: "Multi-Level Cache", slug: "concepts/caching" },
+            { label: "Chat History", slug: "concepts/chat-history" },
+            { label: "Local Models", slug: "concepts/local-models" },
+            { label: "Worker Threads", slug: "concepts/workers" },
+            { label: "WebAssembly (WASM)", slug: "concepts/wasm" },
+            { label: "Self-Healing Execution", slug: "concepts/self-healing" },
+          ],
+        },
+        {
+          label: "Skills Catalog",
+          collapsed: true,
+          autogenerate: { directory: "skills" },
+        },
+        {
+          label: "Administration",
+          items: [
+            { label: "Security", slug: "admin/security" },
+            { label: "Access Control", slug: "admin/access-control" },
+            { label: "Permission Scoping", slug: "admin/permission-scoping" },
+            { label: "Credential Proxy", slug: "admin/credential-proxy" },
+            { label: "Telemetry & Observability", slug: "admin/telemetry" },
+            { label: "Production Safeguards", slug: "admin/production-safeguards" },
+            { label: "Performance Profiler", slug: "admin/performance-profiler" },
+            { label: "Troubleshooting", slug: "admin/troubleshooting" },
+          ],
+        },
+        {
+          label: "Reference",
+          autogenerate: { directory: "reference" },
+        },
+      ],
+    }),
+  ],
 });
