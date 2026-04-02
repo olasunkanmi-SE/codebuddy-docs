@@ -30,7 +30,7 @@ export default defineConfig({
         /* ── Open Graph ── */
         { tag: "meta", attrs: { property: "og:site_name", content: "CodeBuddy" } },
         { tag: "meta", attrs: { property: "og:type", content: "website" } },
-        { tag: "meta", attrs: { property: "og:image", content: "https://codebuddy-docs.vercel.app//og-image.png" } },
+        { tag: "meta", attrs: { property: "og:image", content: "https://codebuddy-docs.vercel.app/og-image.png" } },
         { tag: "meta", attrs: { property: "og:image:width", content: "1200" } },
         { tag: "meta", attrs: { property: "og:image:height", content: "630" } },
         {
@@ -42,7 +42,7 @@ export default defineConfig({
         { tag: "link", attrs: { rel: "author", href: "https://github.com/olasunkanmi-SE" } },
         /* ── Twitter Card ── */
         { tag: "meta", attrs: { name: "twitter:card", content: "summary_large_image" } },
-        { tag: "meta", attrs: { name: "twitter:image", content: "https://codebuddy-docs.vercel.app//og-image.png" } },
+        { tag: "meta", attrs: { name: "twitter:image", content: "https://codebuddy-docs.vercel.app/og-image.png" } },
         { tag: "meta", attrs: { name: "twitter:creator", content: "@kosemani1" } },
         { tag: "meta", attrs: { name: "twitter:site", content: "@kosemani1" } },
         /* ── JSON-LD Structured Data ── */
@@ -59,7 +59,7 @@ export default defineConfig({
               "The autonomous AI software engineer for VS Code, Cursor, Windsurf, and VSCodium. Multi-agent architecture, 27+ tools, local model support, and enterprise-grade security.",
             url: "https://codebuddy-docs.vercel.app/",
             offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-            softwareHelp: { "@type": "WebPage", url: "https://codebuddy-docs.vercel.app//getting-started/overview/" },
+            softwareHelp: { "@type": "WebPage", url: "https://codebuddy-docs.vercel.app/getting-started/overview/" },
             author: {
               "@type": "Person",
               name: "Oyinlola Olasunkanmi Raymond",
