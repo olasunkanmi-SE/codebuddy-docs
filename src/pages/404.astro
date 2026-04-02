@@ -1,0 +1,43 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+---
+
+<StarlightPage
+	frontmatter={{
+		title: '404 — Page Not Found',
+		description: 'The page you are looking for does not exist.',
+		template: 'splash',
+		hero: {
+			title: '404',
+			tagline: 'This page doesn\'t exist. It may have been moved or removed.',
+			actions: [
+				{ text: 'Go to Documentation', link: '/getting-started/overview/', icon: 'right-arrow', variant: 'primary' },
+				{ text: 'Back to Home', link: '/', variant: 'minimal' },
+			],
+		},
+	}}
+>
+	<div style="max-width: 36rem; margin: 0 auto; text-align: center; padding: 1rem;">
+		<p style="color: var(--sl-color-gray-2); font-size: 0.95rem; line-height: 1.7;">
+			The URL might have changed. Try searching for what you need or browse the popular pages below.
+		</p>
+		<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; margin-top: 2rem; text-align: left;">
+			<a href="/getting-started/overview/" style="display: block; padding: 1rem; border: 1px solid var(--sl-color-gray-5); border-radius: 0.5rem; text-decoration: none; transition: border-color 0.15s ease;">
+				<strong style="display: block; color: var(--sl-color-white); margin-bottom: 0.25rem;">Overview</strong>
+				<span style="color: var(--sl-color-gray-3); font-size: 0.85rem;">Get started with CodeBuddy</span>
+			</a>
+			<a href="/getting-started/installation/" style="display: block; padding: 1rem; border: 1px solid var(--sl-color-gray-5); border-radius: 0.5rem; text-decoration: none; transition: border-color 0.15s ease;">
+				<strong style="display: block; color: var(--sl-color-white); margin-bottom: 0.25rem;">Installation</strong>
+				<span style="color: var(--sl-color-gray-3); font-size: 0.85rem;">Install and configure CodeBuddy</span>
+			</a>
+			<a href="/concepts/architecture/" style="display: block; padding: 1rem; border: 1px solid var(--sl-color-gray-5); border-radius: 0.5rem; text-decoration: none; transition: border-color 0.15s ease;">
+				<strong style="display: block; color: var(--sl-color-white); margin-bottom: 0.25rem;">Architecture</strong>
+				<span style="color: var(--sl-color-gray-3); font-size: 0.85rem;">How CodeBuddy works</span>
+			</a>
+			<a href="/admin/troubleshooting/" style="display: block; padding: 1rem; border: 1px solid var(--sl-color-gray-5); border-radius: 0.5rem; text-decoration: none; transition: border-color 0.15s ease;">
+				<strong style="display: block; color: var(--sl-color-white); margin-bottom: 0.25rem;">Troubleshooting</strong>
+				<span style="color: var(--sl-color-gray-3); font-size: 0.85rem;">Resolve common issues</span>
+			</a>
+		</div>
+	</div>
+</StarlightPage>

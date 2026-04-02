@@ -1,0 +1,54 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/Head.astro';
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const pageTitle = Astro.props.entry?.data?.title
+	? `${Astro.props.entry.data.title} — CodeBuddy`
+	: 'CodeBuddy Documentation';
+const pageDescription = Astro.props.entry?.data?.description || 'The autonomous AI software engineer for VS Code.';
+
+/* Build breadcrumb from URL segments */
+const pathSegments = Astro.url.pathname.replace(/^\/|\/$/g, '').split('/').filter(Boolean);
+const breadcrumbs = [
+	{ name: 'Home', url: new URL('/', Astro.site).href },
+];
+let accumulated = '';
+for (const seg of pathSegments) {
+	accumulated += '/' + seg;
+	const label = seg
+		.replace(/-/g, ' ')
+		.replace(/\b\w/g, (c: string) => c.toUpperCase());
+	breadcrumbs.push({ name: label, url: new URL(accumulated + '/', Astro.site).href });
+}
+const breadcrumbLd = {
+	'@context': 'https://schema.org',
+	'@type': 'BreadcrumbList',
+	itemListElement: breadcrumbs.map((b, i) => ({
+		'@type': 'ListItem',
+		position: i + 1,
+		name: b.name,
+		item: b.url,
+	})),
+};
+---
+
+<Default {...Astro.props}><slot /></Default>
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalUrl.href} />
+
+<!-- Dynamic OG per page -->
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={pageDescription} />
+<meta property="og:url" content={canonicalUrl.href} />
+
+<!-- Dynamic Twitter per page -->
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={pageDescription} />
+
+<!-- Article author (helps Google link site to creator) -->
+<meta property="article:author" content="https://olasunkanmi.app" />
+
+<!-- Breadcrumb structured data -->
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
