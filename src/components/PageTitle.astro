@@ -1,0 +1,21 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import CopyButton from './CopyButton.astro';
+
+const isHomePage = Astro.props.slug === '' || Astro.props.slug === undefined || Astro.props.entry?.data?.template === 'splash' || Astro.url.pathname === '/';
+const isGettingStarted = Astro.props.slug?.startsWith('getting-started') || Astro.url.pathname.includes('/getting-started');
+const shouldShowCopyButton = !isHomePage && !isGettingStarted;
+---
+
+{isHomePage ? null : <Default {...Astro.props} />}
+{shouldShowCopyButton && <CopyButton />}
+
+<style is:global>
+  /* Extra safeguard to hide copy button and unwanted titles on the homepage via CSS */
+  :root:has(main .hp-hero) .copy-article-btn,
+  :root:has(main .hp-hero) h1#_top,
+  :root:has(main .hp-hero) .content-panel:first-child {
+    display: none !important;
+  }
+</style>

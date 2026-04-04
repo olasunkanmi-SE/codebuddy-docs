@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kod.dev/sitemap-index.xml
+Sitemap: https://codebuddy-docs.vercel.app/sitemap-index.xml

@@ -1,0 +1,50 @@
+---
+title: API Playground
+description: Experiment with CodeBuddy's Skills API and MCP configuration schemas interactively.
+---
+
+Welcome to the CodeBuddy API Playground. This interactive space helps you validate your skill definitions and MCP configurations before deploying them.
+
+## Skill Schema Validator
+
+Use this section to validate your `SKILL.md` frontmatter.
+
+```json
+{
+  "name": "my-skill",
+  "displayName": "My Skill",
+  "description": "Description of what this skill does",
+  "category": "utility",
+  "version": "1.0.0",
+  "dependencies": {
+    "npm": ["axios"]
+  }
+}
+```
+
+> **Tip**: Ensure your `name` is kebab-case and `category` matches one of the [supported categories](/features/skills/#available-skills).
+
+## MCP Server Config
+
+Validate your `mcp.json` server configurations.
+
+```json
+{
+  "name": "custom-server",
+  "command": "npx",
+  "args": ["-y", "@org/mcp-server"],
+  "env": {
+    "API_KEY": "YOUR_KEY"
+  }
+}
+```
+
+## Interactive Components
+
+*Coming soon: We are building an interactive JSON validator right into this page!*
+
+### Common Patterns
+
+- **Authentication**: How to handle API keys in skills.
+- **Transports**: Choosing between `stdio` and `sse` for MCP.
+- **Dependencies**: OS-aware dependency declarations.

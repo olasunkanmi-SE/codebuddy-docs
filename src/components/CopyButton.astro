@@ -1,0 +1,345 @@
+---
+---
+
+<button id="copy-article-btn" class="copy-article-btn" title="Copy article">
+  <span class="btn-icon">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </svg>
+  </span>
+  <span class="btn-text">Copy</span>
+</button>
+
+<style>
+  .copy-article-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--sl-color-white);
+    background-color: var(--sl-color-gray-6);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .copy-article-btn:hover {
+    background-color: var(--sl-color-gray-5);
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+  }
+
+  .copy-article-btn:active {
+    transform: translateY(0) scale(0.95);
+  }
+
+  .btn-icon {
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s ease;
+  }
+
+  .copy-article-btn.success {
+    background-color: var(--sl-color-accent-low);
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-accent);
+  }
+
+  .copy-article-btn.success .btn-icon {
+    transform: scale(1.2);
+  }
+
+  /* Shine effect */
+  .copy-article-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent
+    );
+    transition: 0.5s;
+  }
+
+  .copy-article-btn:hover::after {
+    left: 100%;
+  }
+</style>
+
+<script>
+  function setupCopyButton() {
+    const btn = document.getElementById('copy-article-btn');
+    if (!btn) return;
+
+    const btnText = btn.querySelector('.btn-text');
+    const btnIcon = btn.querySelector('.btn-icon');
+
+    btn.addEventListener('click', async () => {
+      // Find the content to copy
+      const content = document.querySelector('.sl-markdown-content') || document.querySelector('article');
+      if (!content) {
+        console.error('Copy failed: Content area not found');
+        return;
+      }
+
+      /**
+       * Improved HTML to Markdown converter
+       */
+      function convertToMarkdown(root: HTMLElement): string {
+        let md = '';
+        let lastWasBlock = false;
+
+        // Add Title
+        const titleEl = document.querySelector('h1');
+        if (titleEl) {
+          md += `# ${titleEl.innerText.trim()}\n\n`;
+          lastWasBlock = true;
+        }
+
+        function ensureSpacing() {
+          if (!lastWasBlock) return;
+          if (!md.endsWith('\n\n')) {
+            md = md.trimEnd() + '\n\n';
+          }
+        }
+
+        function processNode(node: Node, indent = '') {
+          if (node.nodeType === Node.TEXT_NODE) {
+            const text = node.textContent || '';
+            if (text.trim() || lastWasBlock) {
+              md += text;
+              lastWasBlock = false;
+            }
+            return;
+          }
+
+          if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+          const el = node as HTMLElement;
+          const tag = el.tagName;
+
+          // Skip noise
+          if (el.classList.contains('copy-article-btn') || 
+              el.classList.contains('sr-only') || 
+              el.classList.contains('copy-button') ||
+              el.classList.contains('mermaid') ||
+              tag === 'BUTTON' || tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NAV') return;
+
+          // Block elements
+          if (/^H[1-6]$/.test(tag)) {
+            ensureSpacing();
+            const level = parseInt(tag[1]);
+            md += `${'#'.repeat(level)} ${el.innerText.trim()}\n\n`;
+            lastWasBlock = true;
+            return;
+          }
+
+          if (tag === 'P') {
+            ensureSpacing();
+            el.childNodes.forEach(child => processNode(child, indent));
+            md += '\n\n';
+            lastWasBlock = true;
+            return;
+          }
+
+          if (tag === 'BLOCKQUOTE' || el.classList.contains('starlight-aside')) {
+            ensureSpacing();
+            let prefix = '> ';
+            if (el.classList.contains('starlight-aside')) {
+              const typeMatch = el.className.match(/starlight-aside--(\w+)/);
+              const type = typeMatch ? typeMatch[1].toUpperCase() : 'NOTE';
+              md += `> [!${type}]\n`;
+            }
+            
+            const subMd = convertToMarkdownInternal(el, indent + '> ');
+            md += subMd.split('\n').map(line => prefix + line).join('\n') + '\n\n';
+            lastWasBlock = true;
+            return;
+          }
+
+          if (tag === 'UL' || tag === 'OL') {
+            ensureSpacing();
+            const items = el.querySelectorAll(':scope > li');
+            items.forEach((li, i) => {
+              const bullet = tag === 'UL' ? '- ' : `${i + 1}. `;
+              md += `${indent}${bullet}`;
+              // Process li content without leading indent for the first line
+              const liMd = convertToMarkdownInternal(li as HTMLElement, indent + '  ');
+              md += liMd.trim() + '\n';
+            });
+            md += '\n';
+            lastWasBlock = true;
+            return;
+          }
+
+          if (tag === 'PRE') {
+            ensureSpacing();
+            const code = el.querySelector('code');
+            const lang = el.getAttribute('data-language') || '';
+            const content = (code || el).innerText.trim();
+            md += `\`\`\`${lang}\n${content}\n\`\`\`\n\n`;
+            lastWasBlock = true;
+            return;
+          }
+
+          if (tag === 'TABLE') {
+            ensureSpacing();
+            const rows = Array.from(el.querySelectorAll('tr'));
+            rows.forEach((row, i) => {
+              const cells = Array.from(row.querySelectorAll('th, td'));
+              md += '| ' + cells.map(c => c.innerText.trim().replace(/\|/g, '\\|')).join(' | ') + ' |\n';
+              if (i === 0) {
+                md += '| ' + cells.map(() => '---').join(' | ') + ' |\n';
+              }
+            });
+            md += '\n';
+            lastWasBlock = true;
+            return;
+          }
+
+          if (tag === 'HR') {
+            ensureSpacing();
+            md += '---\n\n';
+            lastWasBlock = true;
+            return;
+          }
+
+          // Inline elements
+          if (tag === 'STRONG' || tag === 'B') {
+            md += `**${el.innerText}**`;
+            return;
+          }
+          if (tag === 'EM' || tag === 'I') {
+            md += `*${el.innerText}*`;
+            return;
+          }
+          if (tag === 'CODE') {
+            md += `\`${el.innerText}\``;
+            return;
+          }
+          if (tag === 'BR') {
+            md += '  \n';
+            return;
+          }
+          if (tag === 'A') {
+            const href = el.getAttribute('href');
+            if (href && !href.startsWith('#')) {
+              const url = new URL(href, window.location.href).href;
+              md += `[${el.innerText.trim()}](${url})`;
+            } else {
+              md += el.innerText.trim();
+            }
+            return;
+          }
+          if (tag === 'IMG') {
+            const alt = el.getAttribute('alt') || '';
+            const src = el.getAttribute('src');
+            if (src) {
+              const url = new URL(src, window.location.href).href;
+              md += `![${alt}](${url})`;
+            }
+            return;
+          }
+
+          // Fallback for other elements: just process children
+          el.childNodes.forEach(child => processNode(child, indent));
+        }
+
+        function convertToMarkdownInternal(rootEl: HTMLElement, indent = ''): string {
+          const oldMd = md;
+          const oldLastWasBlock = lastWasBlock;
+          md = '';
+          lastWasBlock = false;
+          
+          rootEl.childNodes.forEach(child => processNode(child, indent));
+          
+          const result = md;
+          md = oldMd;
+          lastWasBlock = oldLastWasBlock;
+          return result;
+        }
+
+        root.childNodes.forEach(child => processNode(child));
+
+        return md.replace(/\n{3,}/g, '\n\n').trim();
+      }
+
+      const markdown = convertToMarkdown(content as HTMLElement);
+
+      if (!markdown) {
+        console.warn('Copy warning: Extracted markdown is empty');
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(markdown);
+        
+        // Success state animation
+        const originalText = btnText ? btnText.textContent : 'Copy';
+        const originalIcon = btnIcon ? btnIcon.innerHTML : '';
+        
+        btn.classList.add('success');
+        if (btnText) btnText.textContent = 'Copied!';
+        if (btnIcon) {
+          btnIcon.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          `;
+        }
+
+        // Animate out after delay
+        setTimeout(() => {
+          btn.classList.remove('success');
+          if (btnText) btnText.textContent = originalText;
+          if (btnIcon) btnIcon.innerHTML = originalIcon;
+        }, 2000);
+
+      } catch (err) {
+        console.error('Failed to copy to clipboard:', err);
+        // Fallback for older browsers or non-secure contexts
+        try {
+          const textArea = document.createElement("textarea");
+          textArea.value = markdown;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          
+          // Still show success if fallback works
+          btn.classList.add('success');
+          if (btnText) btnText.textContent = 'Copied!';
+          setTimeout(() => {
+            btn.classList.remove('success');
+            if (btnText) btnText.textContent = 'Copy';
+          }, 2000);
+        } catch (fallbackErr) {
+          console.error('Fallback copy failed:', fallbackErr);
+        }
+      }
+    });
+  }
+
+  // Run on initial load and on Astro page transitions
+  setupCopyButton();
+  document.addEventListener('astro:page-load', setupCopyButton);
+</script>

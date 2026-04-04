@@ -3,19 +3,31 @@ import type { Props } from '@astrojs/starlight/props';
 import SiteTitle from '@astrojs/starlight/components/SiteTitle.astro';
 import Search from '@astrojs/starlight/components/Search.astro';
 import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
+import MobileMenuToggle from '@astrojs/starlight/components/MobileMenuToggle.astro';
 ---
 
 <nav class="top-nav">
+	<div class="mobile-burger-container">
+		<MobileMenuToggle {...Astro.props} />
+	</div>
 	<div class="top-nav-left">
 		<SiteTitle {...Astro.props} />
 	</div>
 	<div class="top-nav-links">
-		<a href="/getting-started/overview/">Docs</a>
-		<a href="/features/skills/">Features</a>
-		<a href="/reference/skills-api/">Reference</a>
-		<a href="/concepts/architecture/">Concepts</a>
-		<a href="/admin/security/">Admin</a>
-		<a href="/blog/">Blog</a>
+		<div class="nav-dropdown">
+			<button class="dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+				Explore
+				<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+			</button>
+			<div class="dropdown-menu">
+				<a href="/getting-started/overview/">Docs</a>
+				<a href="/features/skills/">Features</a>
+				<a href="/reference/skills-api/">Reference</a>
+				<a href="/concepts/architecture/">Concepts</a>
+				<a href="/admin/security/">Admin</a>
+				<a href="/blog/">Blog</a>
+			</div>
+		</div>
 	</div>
 	<div class="top-nav-right">
 		<Search {...Astro.props} />
@@ -37,6 +49,9 @@ import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
 		gap: 1.5rem;
 		height: var(--sl-nav-height);
 	}
+	.mobile-burger-container {
+		display: none;
+	}
 	.top-nav-left {
 		flex-shrink: 0;
 	}
@@ -45,10 +60,79 @@ import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
 		gap: 1.5rem;
 		align-items: center;
 	}
+	.nav-dropdown {
+		position: relative;
+	}
+	.dropdown-trigger {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		background: transparent;
+		border: none;
+		color: var(--sl-color-white);
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		padding: 0.5rem 0;
+		transition: color 0.15s ease;
+	}
+	.dropdown-trigger:hover {
+		color: var(--sl-color-accent);
+	}
+	.chevron {
+		transition: transform 0.2s ease;
+	}
+	.nav-dropdown:hover .chevron {
+		transform: rotate(180deg);
+		color: var(--sl-color-accent);
+	}
+	.dropdown-menu {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		min-width: 160px;
+		background-color: var(--sl-color-gray-6);
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.5rem;
+		padding: 0.5rem;
+		box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(10px);
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+		z-index: 100;
+	}
+	.nav-dropdown:hover .dropdown-menu {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+	}
+	.dropdown-menu a {
+		display: block;
+		padding: 0.625rem 1rem;
+		border-radius: 0.375rem;
+		font-size: 0.875rem;
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+		transition: all 0.15s ease;
+	}
+	.dropdown-menu a:hover {
+		background-color: var(--sl-color-gray-5);
+		color: var(--sl-color-accent);
+	}
+	.nav-dropdown.active .dropdown-menu {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+	}
+	.nav-dropdown.active .chevron {
+		transform: rotate(180deg);
+		color: var(--sl-color-accent);
+	}
 	.top-nav-right {
 		display: flex;
 		align-items: center;
-		gap: 0.75rem;
+		gap: 1.5rem;
 		margin-left: auto;
 	}
 	.github-link {
@@ -71,13 +155,83 @@ import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
 	}
 	@media (max-width: 50rem) {
 		.top-nav {
-			gap: 1rem;
-			font-size: 0.8125rem;
+			gap: 1.25rem;
 			padding: 0.5rem 1rem;
+			display: flex !important;
+			flex-direction: row !important;
+			align-items: center !important;
+			justify-content: flex-start !important;
+		}
+		.mobile-burger-container {
+			display: flex !important;
+			align-items: center !important;
+			order: -10 !important;
+			margin-left: -0.25rem !important;
+			margin-right: 0 !important;
+		}
+		.top-nav-left {
+			order: -5 !important;
+			margin-right: auto !important;
+			margin-left: 0.5rem !important;
+		}
+		.top-nav-right {
+			order: 10 !important;
+			display: flex;
+			align-items: center;
+			gap: 1.25rem;
+			margin-left: 0 !important;
 		}
 		.top-nav-links {
-			gap: 0.75rem;
-			overflow-x: auto;
+			order: 5 !important;
+			display: flex !important;
+			gap: 0.25rem !important;
+		}
+		.dropdown-trigger {
+			font-size: 0.8125rem !important;
+			padding: 0.25rem 0 !important;
+		}
+		.dropdown-menu {
+			left: auto;
+			right: 0;
+			min-width: 140px;
 		}
 	}
 </style>
+
+<script>
+	function setupDropdown() {
+		const dropdown = document.querySelector('.nav-dropdown');
+		const trigger = dropdown?.querySelector('.dropdown-trigger');
+		
+		if (!dropdown || !trigger) return;
+
+		// Toggle on click for mobile/touch
+		trigger.addEventListener('click', (e) => {
+			e.stopPropagation();
+			const isActive = dropdown.classList.toggle('active');
+			trigger.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+		});
+
+		// Close when clicking outside
+		document.addEventListener('click', () => {
+			if (dropdown.classList.contains('active')) {
+				dropdown.classList.remove('active');
+				trigger.setAttribute('aria-expanded', 'false');
+			}
+		});
+
+		// Close on Escape
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && dropdown.classList.contains('active')) {
+				dropdown.classList.remove('active');
+				trigger.setAttribute('aria-expanded', 'false');
+			}
+		});
+	}
+
+	// Initialize
+	setupDropdown();
+	
+	// Handle Astro transitions
+	document.addEventListener('astro:page-load', setupDropdown);
+</script>

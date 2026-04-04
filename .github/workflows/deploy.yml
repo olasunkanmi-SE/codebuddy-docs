@@ -1,0 +1,32 @@
+# To use this workflow, you need to add the following secrets to your GitHub repository:
+# 1. VERCEL_TOKEN: Your Vercel Personal Access Token
+# 2. VERCEL_ORG_ID: Your Vercel Organization ID (found in Team Settings -> General)
+# 3. VERCEL_PROJECT_ID: Your Vercel Project ID (found in Project Settings -> General)
+
+name: Vercel Deployment
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
