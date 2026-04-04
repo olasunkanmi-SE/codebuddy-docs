@@ -3,6 +3,7 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightBlog from "starlight-blog";
 import sitemap from "@astrojs/sitemap";
+import VitePWA from "@vite-pwa/astro";
 import { remarkMermaid } from "./src/plugins/remark-mermaid.mjs";
 import vercel from "@astrojs/vercel";
 
@@ -15,7 +16,42 @@ export default defineConfig({
   },
   integrations: [
     sitemap(),
+    VitePWA({
+      registerType: "autoUpdate",
+      manifest: {
+        name: "CodeBuddy Documentation",
+        short_name: "CodeBuddy Docs",
+        description: "Documentation for CodeBuddy, the autonomous AI software engineer.",
+        theme_color: "#ffffff",
+        icons: [
+          {
+            src: "favicon.svg",
+            sizes: "192x192",
+            type: "image/svg+xml",
+          },
+          {
+            src: "favicon.svg",
+            sizes: "512x512",
+            type: "image/svg+xml",
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,svg,png,jpg,jpeg,gif,webp,woff,woff2}"],
+      },
+    }),
     starlight({
+      title: "CodeBuddy",
+      defaultLocale: "root",
+      locales: {
+        root: { label: "English", lang: "en" },
+        es: { label: "Español", lang: "es" },
+        fr: { label: "Français", lang: "fr" },
+        de: { label: "Deutsch", lang: "de" },
+        ja: { label: "日本語", lang: "ja" },
+        zh: { label: "简体中文", lang: "zh-CN" },
+        yo: { label: "Yorùbá", lang: "yo" },
+      },
       head: [
         /* ── Preconnect hints ── */
         { tag: "link", attrs: { rel: "preconnect", href: "https://cdn.jsdelivr.net", crossorigin: true } },
@@ -26,7 +62,7 @@ export default defineConfig({
           attrs: { rel: "alternate", type: "application/rss+xml", title: "CodeBuddy Blog", href: "/blog/rss.xml" },
         },
         /* ── Analytics (Plausible — privacy-friendly, no cookies) ── */
-        { tag: "script", attrs: { defer: true, "data-domain": "kod.dev", src: "https://plausible.io/js/script.js" } },
+        { tag: "script", attrs: { defer: true, "data-domain": "codebuddy-docs.vercel.app", src: "https://plausible.io/js/script.js" } },
         /* ── Open Graph ── */
         { tag: "meta", attrs: { property: "og:site_name", content: "CodeBuddy" } },
         { tag: "meta", attrs: { property: "og:type", content: "website" } },
@@ -39,6 +75,7 @@ export default defineConfig({
         },
         /* ── Author ── */
         { tag: "meta", attrs: { name: "author", content: "Oyinlola Olasunkanmi Raymond" } },
+        { tag: "meta", attrs: { name: "keywords", content: "AI coding assistant, autonomous AI software engineer, VS Code extension, open source AI agent, LangChain Deep Agents, coding agent, autonomous software engineer" } },
         { tag: "link", attrs: { rel: "author", href: "https://github.com/olasunkanmi-SE" } },
         /* ── Twitter Card ── */
         { tag: "meta", attrs: { name: "twitter:card", content: "summary_large_image" } },
@@ -365,7 +402,6 @@ export default defineConfig({
 					`,
         },
       ],
-      title: "CodeBuddy",
       disable404Route: true,
       editLink: {
         baseUrl: "https://github.com/olasunkanmi-SE/codebuddy-docs/edit/main/",
@@ -380,10 +416,10 @@ export default defineConfig({
           title: "Blog",
           authors: {
             ola: {
-              name: "Olasunkanmi Raymond",
+              name: "Oyinlola Olasunkanmi Raymond",
               title: "Creator of CodeBuddy",
               picture: "https://github.com/olasunkanmi-SE.png",
-              url: "https://github.com/olasunkanmi-SE",
+              url: "https://olasunkanmi.app",
             },
           },
           metrics: {
@@ -398,10 +434,19 @@ export default defineConfig({
       components: {
         Header: "./src/components/Header.astro",
         Head: "./src/components/Head.astro",
+        PageTitle: "./src/components/PageTitle.astro",
       },
       sidebar: [
         {
           label: "Get Started",
+          translations: {
+            es: "Empezar",
+            fr: "Commencer",
+            de: "Loslegen",
+            ja: "始めに",
+            zh: "快速入门",
+            yo: "Bẹ̀rẹ̀",
+          },
           items: [
             { label: "Overview", slug: "getting-started/overview" },
             { label: "Installation", slug: "getting-started/installation" },
@@ -412,6 +457,14 @@ export default defineConfig({
         },
         {
           label: "Use CodeBuddy",
+          translations: {
+            es: "Usar CodeBuddy",
+            fr: "Utiliser CodeBuddy",
+            de: "CodeBuddy verwenden",
+            ja: "CodeBuddy を使用する",
+            zh: "使用 CodeBuddy",
+            yo: "Lo CodeBuddy",
+          },
           items: [
             { label: "Inline Completion", slug: "features/inline-completion" },
             { label: "Code Indexing", slug: "features/code-indexing" },
@@ -445,6 +498,14 @@ export default defineConfig({
         },
         {
           label: "Core Concepts",
+          translations: {
+            es: "Conceptos principales",
+            fr: "Concepts clés",
+            de: "Kernkonzepte",
+            ja: "コアコンセプト",
+            zh: "核心概念",
+            yo: "Àwọn Àbá Àyànfẹ́",
+          },
           items: [
             { label: "Ask & Agent Modes", slug: "concepts/modes" },
             { label: "Context System", slug: "concepts/context" },
@@ -466,11 +527,27 @@ export default defineConfig({
         },
         {
           label: "Skills Catalog",
+          translations: {
+            es: "Catálogo de habilidades",
+            fr: "Catalogue de compétences",
+            de: "Skills-Katalog",
+            ja: "スキルカタログ",
+            zh: "技能目录",
+            yo: "Kàtálọ́ọ̀gù Ìmọ̀",
+          },
           collapsed: true,
           autogenerate: { directory: "skills" },
         },
         {
           label: "Administration",
+          translations: {
+            es: "Administración",
+            fr: "Administration",
+            de: "Verwaltung",
+            ja: "管理",
+            zh: "管理",
+            yo: "Ìṣàkóso",
+          },
           items: [
             { label: "Security", slug: "admin/security" },
             { label: "Access Control", slug: "admin/access-control" },
@@ -484,7 +561,22 @@ export default defineConfig({
         },
         {
           label: "Reference",
-          autogenerate: { directory: "reference" },
+          translations: {
+            es: "Referencia",
+            fr: "Référence",
+            de: "Referenz",
+            ja: "リファレンス",
+            zh: "参考",
+            yo: "Ìtọ́kasí",
+          },
+          items: [
+            { label: "Changelog", slug: "reference/changelog" },
+            { label: "Commands Reference", slug: "reference/commands" },
+            { label: "Skills API", slug: "reference/skills-api" },
+            { label: "API Playground", slug: "reference/playground" },
+            { label: "Contributing", slug: "reference/contributing" },
+            { label: "Settings", slug: "reference/settings" },
+          ],
         },
       ],
     }),
