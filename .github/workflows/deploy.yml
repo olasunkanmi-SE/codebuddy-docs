@@ -36,9 +36,11 @@ jobs:
         with:
           args: --verbose --no-progress './**/*.md' './**/*.mdx'
 
-      - name: Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v12
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
         with:
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-          staticDistDir: './dist'
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && '--prod' || '' }}
+          working-directory: ./
